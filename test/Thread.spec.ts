@@ -16,9 +16,11 @@ describe('Threads', () => {
     });
   });
 
-  it('runs a function in a worker', () => {
+  it('runs a function in a worker', async () => {
     const thread = Thread();
-    thread.run(mult2, 6);
-    expect(thread.state).toBe('running');
+    const p = await thread.run(mult2, 6);
+    expect(thread.state).toBe('idle');
+    expect(p).toBe(12);
+    expect(await thread.run(mult2, 14)).toBe(28);
   });
 });
