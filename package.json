@@ -1,0 +1,21 @@
+{
+  "name": "karma-jasmine-typescript",
+  "version": "0.0.0",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "test": "karma start",
+    "lint": "tslint --format stylish --project tsconfig.json"
+  },
+  "devDependencies": {
+    "@types/jasmine": "^2.8.7",
+    "@types/node": "^13.1.1",
+    "jasmine-core": "^3.1.0",
+    "karma": "^2.0.2",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-jasmine": "^1.1.2",
+    "karma-spec-reporter": "^0.0.32",
+    "karma-typescript": "^3.0.12",
+    "typescript": "^3.7.4"
+  }
+}
