@@ -25,11 +25,13 @@ export class Task<T extends (...args: any[]) => any> implements ITaskOptions<T> 
 
     public run(...args: Parameters<T>): Promise<T> {
         this.state = 'running';
-        const result = typeof this.func === 'function' ? this.func(...args) : eval(`(${this.func})`);
-        if (result)
-            this.resolve(result);
-        else
-            this.reject('Task error');
+        try {
+            const result = typeof this.func === 'function' ? this.func(...args) : eval(`(${this.func})`);
+            if (result)
+                this.resolve(result);
+        } catch (e) {
+            this.reject(e);
+        }
         return this.done();
     }
 
