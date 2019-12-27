@@ -1,18 +1,18 @@
-import { fnToURL } from './helpers';
+import { fnToURL, noOp} from './helpers';
 import { Message } from './Message';
 import { Task } from './Task';
 
 export type ThreadConfig = {
     id: number;
-    onTaskDone: (thread: Thread) => void;
-    onTerminate: (thread: Thread) => void;
+    onTaskDone?: (thread: Thread) => void;
+    onTerminate?: (thread: Thread) => void;
 };
 
 export class Thread implements ThreadConfig {
     private _worker: Worker;
     public id: number;
-    public onTaskDone: (thread: this) => void;
-    public onTerminate: (thread: this) => void;
+    public onTaskDone: (thread: this) => void = noOp;
+    public onTerminate: (thread: this) => void = noOp;
     public state: 'idle' | 'running';
     public tasks: Task<any>[];
 
@@ -50,8 +50,10 @@ export class Thread implements ThreadConfig {
             task.resolve(message.result);
 
         this.onTaskDone(this);
+
         if (this.tasks.length === 1)
             this.state = 'idle';
+
         this.tasks.splice(taskIdx, 1);
     }
 

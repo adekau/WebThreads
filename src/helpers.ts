@@ -13,3 +13,5 @@ export const fnToURL = (func: Function | string) => {
 
     return URL.createObjectURL(blob);
 }
+
+export const noOp = (): void => {};

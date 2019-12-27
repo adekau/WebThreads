@@ -8,9 +8,7 @@ function threadTerminate(th: Thread) {
 describe('Thread', () => {
     it('creates a thread', () => {
         const thread = new Thread({
-            id: 1,
-            onTaskDone: jasmine.createSpy('taskDone'),
-            onTerminate: threadTerminate
+            id: 1
         });
 
         expect(thread).toBeDefined();
@@ -61,9 +59,7 @@ describe('Thread', () => {
 
     it('adds and removes to the task queue', async () => {
         const thread = new Thread({
-            id: 1,
-            onTaskDone: jasmine.createSpy('taskDone'),
-            onTerminate: threadTerminate
+            id: 1
         });
 
         const task = new Task({
@@ -81,9 +77,7 @@ describe('Thread', () => {
 
     it('Queues multiple tasks', async () => {
         const thread = new Thread({
-            id: 1,
-            onTaskDone: jasmine.createSpy('taskDone'),
-            onTerminate: threadTerminate
+            id: 1
         });
 
         const task = new Task({
@@ -109,9 +103,7 @@ describe('Thread', () => {
 
     it('handles rejections', async (done) => {
         const thread = new Thread({
-            id: 1,
-            onTaskDone: jasmine.createSpy('taskDone'),
-            onTerminate: threadTerminate
+            id: 1
         });
 
         const task = new Task({
