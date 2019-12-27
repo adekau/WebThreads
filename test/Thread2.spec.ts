@@ -78,4 +78,32 @@ describe('Thread', () => {
         expect(thread.state).toBe('idle');
         expect(thread.tasks.length).toBe(0);
     });
+
+    it('Queues multiple tasks', async () => {
+        const thread = new Thread({
+            id: 1,
+            onTaskDone: jasmine.createSpy('taskDone'),
+            onTerminate: threadTerminate
+        });
+
+        const task = new Task({
+            id: 1,
+            func: () => new Promise((resolve, _) => setTimeout(() => resolve(5), 500))
+        });
+        const task2 = new Task({
+            id: 2,
+            func: () => new Promise((resolve, _) => setTimeout(() => resolve(5), 750))
+        });
+
+        thread.run(task);
+        thread.run(task2);
+        expect(thread.state).toBe('running');
+        expect(thread.tasks.length).toBe(2);
+        await task.done();
+        expect(thread.state).toBe('running');
+        expect(thread.tasks.length).toBe(1);
+        await task2.done();
+        expect(thread.state).toBe('idle');
+        expect(thread.tasks.length).toBe(0);
+    });
 });

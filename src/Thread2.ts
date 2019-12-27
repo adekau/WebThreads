@@ -50,7 +50,8 @@ export class Thread implements ThreadConfig {
             task.resolve(message.result);
 
         this.onTaskDone(this);
-        this.state = 'idle';
+        if (this.tasks.length === 1)
+            this.state = 'idle';
         this.tasks.splice(taskIdx, 1);
     }
 
