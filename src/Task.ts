@@ -38,10 +38,10 @@ export class Task<T extends (...args: any[]) => any> implements ITaskOptions<T> 
     }
 
     public async done() {
-        return this._promise.then(v => {
+        return this._promise.then((v: T) => {
             this.state = 'done';
             return v;
-        }, e => {
+        }).catch((e: any) => {
             this.state = 'error';
             throw e;
         });
