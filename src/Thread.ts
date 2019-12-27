@@ -46,7 +46,6 @@ export const Thread = (): Thread => {
         _threadReceiveMsg: function (this: Thread, e: MessageEvent) {
             const msg = e.data;
             this.state = 'idle';
-            console.log(this, msg);
             if (msg)
                 this.threadOpts?.resolve(msg);
             else
