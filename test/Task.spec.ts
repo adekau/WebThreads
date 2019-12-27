@@ -21,6 +21,7 @@ describe('Task', () => {
             func: (x: number) => x * 2
         });
         expect(await t.run(5)).toBe(10);
+        expect(t.state).toBe('done');
     });
 
     it('should execute async fn', async () => {
@@ -30,6 +31,7 @@ describe('Task', () => {
             func: mult2
         });
         expect(await t.run(6)).toBe(12);
+        expect(t.state).toBe('done');
     });
 
     it('handles errors', async (done) => {
@@ -46,6 +48,9 @@ describe('Task', () => {
         });
 
         t.run(0).then(res => fail(`resolved with ${res}`))
-            .catch(() => done());
+            .catch(() => {
+                expect(t.state).toBe('error');
+                done();
+            });
     });
 });

@@ -28,8 +28,10 @@ export class Task<T extends (...args: any[]) => any> implements ITaskOptions<T> 
         try {
             const result = typeof this.func === 'function' ? this.func(...args) : eval(`(${this.func})`);
             if (result)
+                this.state = 'done';
                 this.resolve(result);
         } catch (e) {
+            this.state = 'error';
             this.reject(e);
         }
         return this.done();
