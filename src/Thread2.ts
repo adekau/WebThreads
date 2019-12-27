@@ -86,7 +86,6 @@ const workerMain = `function() {
             .map(key => msg[key]);
 
         try {
-            console.log(msg.func);
             const result = eval('(' + msg.func + ')').apply(undefined, args);
             if (result && result.then && result.catch) {
                 result

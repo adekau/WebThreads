@@ -106,4 +106,21 @@ describe('Thread', () => {
         expect(thread.state).toBe('idle');
         expect(thread.tasks.length).toBe(0);
     });
+
+    it('handles rejections', async (done) => {
+        const thread = new Thread({
+            id: 1,
+            onTaskDone: jasmine.createSpy('taskDone'),
+            onTerminate: threadTerminate
+        });
+
+        const task = new Task({
+            id: 1,
+            func: (x: number) => new Promise((res, rej) => x === 0 ? rej('cant divide by 0') : res(5 / x))
+        });
+        thread.run(task, 0);
+        task.done().then(r => {
+            fail(`Should not have resolved (resolved with: ${r})`);
+        }).catch(_ => done());
+    });
 });

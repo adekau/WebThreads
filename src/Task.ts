@@ -9,7 +9,7 @@ export class Task<T extends (...args: any[]) => any> implements ITaskOptions<T> 
     public reject: (reason: unknown) => void;
     public id: number;
     public func: T | string;
-    public state: 'todo' | 'running' | 'done';
+    public state: 'todo' | 'running' | 'done' | 'error';
     public startTime: Date | undefined;
 
     constructor(opts: ITaskOptions<T>) {
@@ -25,7 +25,11 @@ export class Task<T extends (...args: any[]) => any> implements ITaskOptions<T> 
 
     public run(...args: Parameters<T>): Promise<T> {
         this.state = 'running';
-        this.resolve(typeof this.func === 'function' ? this.func(...args) : eval(`(${this.func})`));
+        const result = typeof this.func === 'function' ? this.func(...args) : eval(`(${this.func})`);
+        if (result)
+            this.resolve(result);
+        else
+            this.reject('Task error');
         return this.done();
     }
 
@@ -33,6 +37,9 @@ export class Task<T extends (...args: any[]) => any> implements ITaskOptions<T> 
         return this._promise.then(v => {
             this.state = 'done';
             return v;
+        }, e => {
+            this.state = 'error';
+            throw e;
         });
     }
 };
