@@ -31,7 +31,6 @@ before_install:
   - "export DISPLAY=:99.0"
 
 scripts:
-  - "npm install codecov -g"
-  - "node_modules/karma/bin/karma start ./karma.conf.js --single-run"
-  - "istanbul cover ./node_modules/jasmine/bin/jasmine.js"
+  - npm install codecov -g
+  - istanbul cover "./node_modules/karma/bin/karma" start --single-run
   - codecov
