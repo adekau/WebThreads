@@ -11,7 +11,14 @@ module.exports = (config) => {
     ],
     karmaTypescriptConfig: {
       tsconfig: "./tsconfig.json",
+      reports: {
+          "json": {
+              directory: "coverage",
+              filename: "coverage.json"
+          }
+      }
     },
+
     client: {
       // leave Jasmine Spec Runner output visible in browser
       clearContext: false
