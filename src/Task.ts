@@ -26,10 +26,12 @@ export class Task<T extends (...args: any[]) => any> implements ITaskOptions<T> 
     public run(...args: Parameters<T>): Promise<T> {
         this.state = 'running';
         try {
-            const result = typeof this.func === 'function' ? this.func(...args) : eval(`(${this.func})`);
+            const result = typeof this.func === 'function'
+                ? this.func(...args)
+                : eval(`(${this.func})`);
+
             this.state = 'done';
             this.resolve(result);
-
         } catch (e) {
             this.state = 'error';
             this.reject(e);
@@ -47,4 +49,3 @@ export class Task<T extends (...args: any[]) => any> implements ITaskOptions<T> 
         });
     }
 };
-
