@@ -1,11 +1,30 @@
 export interface ITaskOptions<T> {
+    /**
+     * Task id, used for keeping track of tasks in a thread pool.
+     */
     id: number;
+
+    /**
+     * Function to execute when `Task.run` is called.
+     */
     func: T | string;
 };
 
+/**
+ * A deferred computation that can be run asynchronously or in parallel on a thread.
+ * @param opts The options to use on Task creation.
+ */
 export class Task<T extends (...args: any[]) => any> implements ITaskOptions<T> {
     private _promise: Promise<T>;
+    /**
+     * Completes the task with a value.
+     * @param value the value to complete the task with.
+     */
     public resolve: (value: T) => void;
+    /**
+     * Fails the task with a reason.
+     * @param reason an explanation of why the task failed.
+     */
     public reject: (reason: unknown) => void;
     public id: number;
     public func: T | string;
@@ -23,8 +42,15 @@ export class Task<T extends (...args: any[]) => any> implements ITaskOptions<T> 
         this.startTime = undefined;
     }
 
+    /**
+     * Runs the task.
+     * @param args Arguments to run the task's function with.
+     * @returns Promise<T>
+     */
     public run(...args: Parameters<T>): Promise<T> {
         this.state = 'running';
+        this.startTime = new Date();
+
         try {
             const result = typeof this.func === 'function'
                 ? this.func(...args)
@@ -39,7 +65,11 @@ export class Task<T extends (...args: any[]) => any> implements ITaskOptions<T> 
         return this.done();
     }
 
-    public async done() {
+    /**
+     * Returns a promise that completes when the task is done, or fails when the task fails.
+     * @returns Promise<T>
+     */
+    public async done(): Promise<T> {
         return this._promise.then((v: T) => {
             this.state = 'done';
             return v;
