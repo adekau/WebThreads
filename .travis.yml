@@ -1,11 +1,13 @@
-sudo: false
+sudo: required
+
+dist: trusty
 
 language: node_js
 
 node_js:
-  - '6'
   - '8'
   - '10'
+  - '12'
 
 git:
   depth: 1
@@ -18,12 +20,11 @@ cache:
 notifications:
   email: false
 
-before_install:
-  - export CHROME_BIN=chromium-browser
-
 services:
   - xvfb
 
-before_script:
-  - "sudo chown root /usr/lib/chromium-browser/chrome-sandbox"
-  - "sudo chmod 4755 /usr/lib/chromium-browser/chrome-sandbox"
+addons:
+  - chrome: stable
+
+before_install:
+  - export CHROME_BIN=chromium-browser
