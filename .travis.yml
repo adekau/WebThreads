@@ -32,5 +32,5 @@ before_install:
 
 scripts:
   - npm install codecov -g
-  - "./node_modules/karma/bin/karma" start --single-run
-  - codecov -f ./coverage/*.json
+  - ./node_modules/karma/bin/karma start --single-run
+  - codecov -f "./coverage/*.json"
