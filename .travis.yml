@@ -28,7 +28,6 @@ addons:
 
 before_install:
   - "export TRAVIS=1"
-  - "export CHROME_BIN=chromium-browser"
   - "export DISPLAY=:99.0"
 
 script: node_modules/karma/bin/karma start ./karma.conf.js --single-run
