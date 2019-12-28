@@ -17,5 +17,8 @@
     "karma-spec-reporter": "^0.0.32",
     "karma-typescript": "^4.0.0",
     "typescript": "^3.7.4"
+  },
+  "dependencies": {
+    "jasmine": "^3.5.0"
   }
 }
