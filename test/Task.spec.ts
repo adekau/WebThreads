@@ -18,7 +18,7 @@ describe('Task', () => {
         const fn = (x: number) => x * 2;
         const t = new Task({
             id: 1,
-            func: (x: number) => x * 2
+            func: fn
         });
         expect(await t.run(5)).toBe(10);
         expect(t.state).toBe('done');
