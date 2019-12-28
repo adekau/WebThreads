@@ -1,4 +1,4 @@
-const realBrowser = String(process.env.BROWSER).match(/^(1|true)$/gi)
+const realBrowser = process.env.TRAVIS;
 const travisLaunchers = {
   chrome_travis: {
     base: 'Chrome',
@@ -34,6 +34,6 @@ module.exports = (config) => {
     logLevel: config.LOG_INFO,
     autoWatch: true,
     browsers: localBrowsers,
-    singleRun: false
+    singleRun: false,
   })
 }
