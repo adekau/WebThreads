@@ -33,6 +33,5 @@ before_install:
 scripts:
   - "npm install codecov -g"
   - "node_modules/karma/bin/karma start ./karma.conf.js --single-run"
-
-after_success:
-  - codecov -f coverage/*.json
+  - "istanbul cover ./node_modules/jasmine/bin/jasmine.js"
+  - codecov
