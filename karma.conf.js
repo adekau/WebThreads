@@ -1,12 +1,4 @@
 const realBrowser = process.env.TRAVIS;
-const travisLaunchers = {
-  chrome_travis: {
-    base: 'Chrome',
-    flags: [ '--no-sandbox' ]
-  }
-}
-
-const localBrowsers = realBrowser ? Object.keys(travisLaunchers) : [ 'Chrome' ]
 
 module.exports = (config) => {
   config.set({
@@ -33,7 +25,13 @@ module.exports = (config) => {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: localBrowsers,
+    browsers: realBrowser ? [ 'chrome_travis' ] : [ 'Chrome' ],
     singleRun: realBrowser ? true : false,
+    customLaunchers: {
+        chrome_travis: {
+            base: 'Chrome',
+            flags: [ '--no-sandbox' ]
+        }
+    }
   })
 }
