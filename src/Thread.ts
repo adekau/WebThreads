@@ -1,4 +1,4 @@
-import { fnToURL, noOp} from './helpers';
+import { fnToURL, noOp } from './helpers';
 import { Message } from './Message';
 import { Task } from './Task';
 
@@ -15,11 +15,13 @@ export class Thread implements ThreadConfig {
     public onTerminate: (thread: this) => void = noOp;
     public state: 'idle' | 'running';
     public tasks: Task<any>[];
+    public globals: { [k: string]: any };
 
     constructor(config: ThreadConfig) {
         Object.assign(this, config);
         this.state = 'idle';
         this.tasks = [];
+        this.globals = [];
         this._worker = new Worker(fnToURL(workerMain));
         this._worker.addEventListener('message', this._onMessage.bind(this));
     }
@@ -76,9 +78,26 @@ export class Thread implements ThreadConfig {
     public postMessage(msg: { type: 'run' } & Message, transferables: Transferable[]): void {
         this._worker.postMessage(msg, transferables);
     }
+
+    public setOrMergeGlobals(globals: { [k: string]: any }, taskId?: number): Promise<void> {
+        Object.assign(this.globals, globals);
+        const setGlobalTask = new Task({ id: taskId || 1, func: setGlobals });
+        this.run(setGlobalTask, this.globals);
+
+        return new Promise((resolve, reject) => {
+            setGlobalTask.done()
+                .then(() => resolve())
+                .catch(e => reject(e));
+        });
+    }
 }
 
 const workerMain = `function() {
+    const global = new Proxy({}, {
+        get: (obj, prop) => (self[prop]),
+        set: (obj, prop, newval) => (self[prop] = newval)
+    });
+
     onmessage = function (ev) {
         const msg = ev.data;
 
@@ -100,3 +119,8 @@ const workerMain = `function() {
         }
     }
 };`;
+
+const setGlobals = `function (g) {
+    if (g !== undefined)
+        Object.keys(g).forEach(k => global[k] = g[k]);
+}`;

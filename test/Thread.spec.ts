@@ -1,5 +1,5 @@
-import { Thread } from "../src/Thread";
-import { Task } from "../src/Task";
+import { Task } from '../src/Task';
+import { Thread } from '../src/Thread';
 
 function threadTerminate(th: Thread) {
     console.error(th.id + ' terminated');
@@ -114,5 +114,25 @@ describe('Thread', () => {
         task.done().then(r => {
             fail(`Should not have resolved (resolved with: ${r})`);
         }).catch(_ => done());
+    });
+
+    it('sets globals', async () => {
+        const glbls = {
+            name: 'Alex',
+            age: 24
+        }
+        const thread = new Thread({
+            id: 1
+        });
+        await thread.setOrMergeGlobals(glbls);
+        const task = new Task({
+            id: 2,
+            func: `() => global.name + ' is ' + global.age`
+        });
+        thread.run(task);
+        const result = await task.done();
+        expect(result).toBe('Alex is 24');
+        expect(Object.keys(thread.globals)).toEqual(Object.keys(glbls));
+        expect(Object.values(thread.globals)).toEqual(Object.values(glbls));
     });
 });
