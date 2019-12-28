@@ -30,4 +30,9 @@ before_install:
   - "export TRAVIS=1"
   - "export DISPLAY=:99.0"
 
-script: node_modules/karma/bin/karma start ./karma.conf.js --single-run
+scripts:
+  - "npm install codecov -g"
+  - "node_modules/karma/bin/karma start ./karma.conf.js --single-run"
+
+after_success:
+  - codecov
