@@ -135,4 +135,27 @@ describe('Thread', () => {
         expect(Object.keys(thread.globals)).toEqual(Object.keys(glbls));
         expect(Object.values(thread.globals)).toEqual(Object.values(glbls));
     });
+
+    it('runs two threads at the same time', async (done) => {
+        const thread1 = new Thread({ id: 1 });
+        const thread2 = new Thread({ id: 2 });
+        const fn = () => new Promise((res, _) => setTimeout(() => (res()), 500));
+        const task1 = new Task({ id: 1, func: fn });
+        const task2 = new Task({ id: 2, func: fn });
+
+        thread1.run(task1);
+        thread2.run(task2);
+
+        expect(thread1.state).toBe('running');
+        expect(thread2.state).toBe('running');
+
+        setTimeout(() => {
+            expect(task1.state).toBe('done');
+            expect(task2.state).toBe('done');
+            expect(thread1.state).toBe('idle');
+            expect(thread2.state).toBe('idle');
+
+            done();
+        }, 600);
+    });
 });

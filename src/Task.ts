@@ -20,12 +20,12 @@ export class Task<T extends (...args: any[]) => any> implements ITaskOptions<T> 
      * Completes the task with a value.
      * @param value the value to complete the task with.
      */
-    public resolve: (value: T) => void;
+    public resolve: (value?: T | PromiseLike<T> | undefined) => void;
     /**
      * Fails the task with a reason.
      * @param reason an explanation of why the task failed.
      */
-    public reject: (reason: unknown) => void;
+    public reject: (reason?: unknown) => void;
     public id: number;
     public func: T | string;
     public state: 'todo' | 'running' | 'done' | 'error';
@@ -35,8 +35,15 @@ export class Task<T extends (...args: any[]) => any> implements ITaskOptions<T> 
         this.id = opts.id;
         this.func = opts.func;
         this._promise = new Promise((resolve, reject) => {
-            this.resolve = resolve;
-            this.reject = reject;
+            this.resolve = (value?: T | PromiseLike<T> | undefined) => {
+                this.state = 'done';
+                resolve(value);
+            };
+
+            this.reject = (reason?: unknown) => {
+                this.state = 'error';
+                reject(reason);
+            };
         });
         this.state = 'todo';
         this.startTime = undefined;

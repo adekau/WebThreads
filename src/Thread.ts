@@ -97,6 +97,7 @@ export class Thread implements ThreadConfig {
         Object.keys(args).forEach((_, i) => message['argument' + i] = args[i]);
 
         this.state = 'running';
+        task.state = 'running';
         this.postMessage(message, []);
     };
 
