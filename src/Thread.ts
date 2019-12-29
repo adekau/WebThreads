@@ -42,25 +42,16 @@ export class Thread implements ThreadConfig {
         this.tasks = [];
         this.globals = [];
         this._worker = new Worker(fnToURL(workerMain));
-        this._worker.addEventListener('message', this._onMessage.bind(this));
-    }
-
-    private _onMessage(event: MessageEvent): void {
-        const { data } = event;
-        this._handleWorkerMessage(data);
+        this._worker.addEventListener(
+            'message',
+            ({ data }: MessageEvent): void => (this._handleWorkerMessage(data))
+        );
     }
 
     private _handleWorkerMessage(message: Message): void {
-        let taskIdx;
-
-        this.tasks.some((task, idx) => {
-            if (message.id === task.id) {
-                taskIdx = idx;
-                return true;
-            } else
-                return false;
-        });
-
+        const taskIdx: number = this.tasks.findIndex(
+            task => message.id === task.id
+        );
         if (taskIdx === undefined)
             return;
 
@@ -153,11 +144,11 @@ const workerMain: string = `function() {
 
         try {
             const result = eval('(' + msg.func + ')').apply(undefined, args);
-            if (result && result.then && result.catch) {
+            if (result && result.then && result.catch)
                 result
                     .then(res => self.postMessage({ type: 'result', id: msg.id, result: res }))
                     .catch(err => self.postMessage({ type: 'error', id: msg.id, error: err.stack }));
-            } else
+            else
                 self.postMessage({ type: 'result', id: msg.id, result });
         } catch (e) {
             self.postMessage({ type: 'error', id: msg.id, error: e.stack });
