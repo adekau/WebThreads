@@ -15,12 +15,12 @@ export interface ITaskOptions<T> {
  * @param opts The options to use on Task creation.
  */
 export class Task<T extends (...args: any[]) => any> implements ITaskOptions<T> {
-    private _promise: Promise<T>;
+    private _promise: Promise<ReturnType<T>>;
     /**
      * Completes the task with a value.
      * @param value the value to complete the task with.
      */
-    public resolve: (value?: T | PromiseLike<T> | undefined) => void;
+    public resolve: (value?: ReturnType<T> | PromiseLike<ReturnType<T>> | undefined) => void;
     /**
      * Fails the task with a reason.
      * @param reason an explanation of why the task failed.
@@ -35,7 +35,7 @@ export class Task<T extends (...args: any[]) => any> implements ITaskOptions<T> 
         this.id = opts.id;
         this.func = opts.func;
         this._promise = new Promise((resolve, reject) => {
-            this.resolve = (value?: T | PromiseLike<T> | undefined) => {
+            this.resolve = (value?: ReturnType<T> | PromiseLike<ReturnType<T>> | undefined) => {
                 this.state = 'done';
                 resolve(value);
             };
@@ -76,9 +76,9 @@ export class Task<T extends (...args: any[]) => any> implements ITaskOptions<T> 
      * Returns a promise that completes when the task is done, or fails when the task fails.
      * @returns Promise<T>
      */
-    public async done(): Promise<T> {
+    public async done(): Promise<ReturnType<T>> {
         return this._promise
-            .then((v: T) => (this.state = 'done', v))
+            .then((v: ReturnType<T>) => (this.state = 'done', v))
             .catch((e: any) => {
                 this.state = 'error';
                 throw e;

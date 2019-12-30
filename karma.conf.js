@@ -12,6 +12,7 @@ module.exports = (config) => {
     karmaTypescriptConfig: {
       tsconfig: "./tsconfig.json",
       reports: {
+          "html": "coverage",
           "json": {
               directory: "coverage",
               filename: "coverage.json"
