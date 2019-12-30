@@ -83,8 +83,7 @@ export class ThreadPool {
             throw new Error(`ThreadPool ${this.id} is terminated.`);
 
         const idleThreads = this._threads
-            .filter(thread => thread.state === 'idle'
-                && thread.tasks.length <= this.maxTasksPerThread)
+            .filter(thread => thread.tasks.length <= this.maxTasksPerThread)
             .sort((a, b) => a.tasks.length - b.tasks.length);
 
         if (idleThreads.length)
